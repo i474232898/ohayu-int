@@ -1,0 +1,48 @@
+"use strict";
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+var DeferredExecutorService_1;
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.DeferredExecutorService = void 0;
+const common_1 = require("@nestjs/common");
+const core_1 = require("@nestjs/core");
+let DeferredExecutorService = DeferredExecutorService_1 = class DeferredExecutorService {
+    moduleRef;
+    logger = new common_1.Logger(DeferredExecutorService_1.name);
+    allowedTokens = new Set(['UserRepository']);
+    allowedMethods = new Set([
+        'update',
+        'create',
+        'delete',
+    ]);
+    constructor(moduleRef) {
+        this.moduleRef = moduleRef;
+    }
+    async execute(msg) {
+        const { providerToken, method, args } = msg;
+        if (!this.allowedTokens.has(providerToken))
+            throw new common_1.ForbiddenException(`Token "${providerToken}" is not allowed.`);
+        if (!this.allowedMethods.has(method))
+            throw new common_1.ForbiddenException(`Method "${method}" is not allowed.`);
+        const provider = await this.moduleRef.resolve(providerToken, core_1.ContextIdFactory.create(), { strict: false });
+        console.log(provider, '<');
+        if (!provider || typeof provider[method] !== 'function') {
+            throw new common_1.BadRequestException(`Provider "${providerToken}" does not implement "${method}()".`);
+        }
+        this.logger.debug(`Executing ${providerToken}.${method} with args: ${JSON.stringify(args)}`);
+        return provider[method](...args);
+    }
+};
+exports.DeferredExecutorService = DeferredExecutorService;
+exports.DeferredExecutorService = DeferredExecutorService = DeferredExecutorService_1 = __decorate([
+    (0, common_1.Injectable)({ scope: common_1.Scope.DEFAULT }),
+    __metadata("design:paramtypes", [core_1.ModuleRef])
+], DeferredExecutorService);
+//# sourceMappingURL=deferred-executor.service.js.map
