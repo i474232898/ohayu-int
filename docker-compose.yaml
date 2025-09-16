@@ -1,0 +1,17 @@
+version: '3.8'
+services:
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports: ['5672:5672', '15672:15672']
+  # app-producer:
+  #   build: .
+  #   command: ['node', 'dist/main-producer.js']
+  #   environment:
+  #     - RABBITMQ_URL=amqp://rabbitmq:5672
+  #   depends_on: [rabbitmq]
+  # app-worker:
+  #   build: .
+  #   command: ['node', 'dist/main-worker.js']
+  #   environment:
+  #     - RABBITMQ_URL=amqp://rabbitmq:5672
+  #   depends_on: [rabbitmq]
