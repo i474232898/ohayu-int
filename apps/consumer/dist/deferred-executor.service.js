@@ -12,18 +12,14 @@ var DeferredExecutorService_1;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.DeferredExecutorService = void 0;
 const common_1 = require("@nestjs/common");
-const core_1 = require("@nestjs/core");
+const nest_invoke_1 = require("nest-invoke");
 let DeferredExecutorService = DeferredExecutorService_1 = class DeferredExecutorService {
-    moduleRef;
+    methodService;
     logger = new common_1.Logger(DeferredExecutorService_1.name);
     allowedTokens = new Set(['UserRepository']);
-    allowedMethods = new Set([
-        'update',
-        'create',
-        'delete',
-    ]);
-    constructor(moduleRef) {
-        this.moduleRef = moduleRef;
+    allowedMethods = new Set(['update']);
+    constructor(methodService) {
+        this.methodService = methodService;
     }
     async execute(msg) {
         const { providerToken, method, args } = msg;
@@ -31,18 +27,12 @@ let DeferredExecutorService = DeferredExecutorService_1 = class DeferredExecutor
             throw new common_1.ForbiddenException(`Token "${providerToken}" is not allowed.`);
         if (!this.allowedMethods.has(method))
             throw new common_1.ForbiddenException(`Method "${method}" is not allowed.`);
-        const provider = await this.moduleRef.resolve(providerToken, core_1.ContextIdFactory.create(), { strict: false });
-        console.log(provider, '<');
-        if (!provider || typeof provider[method] !== 'function') {
-            throw new common_1.BadRequestException(`Provider "${providerToken}" does not implement "${method}()".`);
-        }
-        this.logger.debug(`Executing ${providerToken}.${method} with args: ${JSON.stringify(args)}`);
-        return provider[method](...args);
+        this.methodService.invoke(providerToken, method, args);
     }
 };
 exports.DeferredExecutorService = DeferredExecutorService;
 exports.DeferredExecutorService = DeferredExecutorService = DeferredExecutorService_1 = __decorate([
     (0, common_1.Injectable)({ scope: common_1.Scope.DEFAULT }),
-    __metadata("design:paramtypes", [core_1.ModuleRef])
+    __metadata("design:paramtypes", [nest_invoke_1.MethodService])
 ], DeferredExecutorService);
 //# sourceMappingURL=deferred-executor.service.js.map

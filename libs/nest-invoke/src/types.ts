@@ -4,5 +4,4 @@ export type ExecMessage = {
   method: AllowedMethods; // method name to call
   args: any[]; // forwarded to the method
   id?: string; // optional message id
-  metadata?: any; // optional metadata
 };

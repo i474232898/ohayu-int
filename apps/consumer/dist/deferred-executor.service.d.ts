@@ -1,18 +1,9 @@
-import { ModuleRef } from '@nestjs/core';
-type AllowedMethods = 'update' | 'delete' | 'create';
-type ExecMessage = {
-    providerToken: string;
-    method: AllowedMethods;
-    args: any[];
-    id: string;
-    metadata?: any;
-};
+import { MethodService, ExecMessage } from 'nest-invoke';
 export declare class DeferredExecutorService {
-    private readonly moduleRef;
+    private methodService;
     private readonly logger;
     private readonly allowedTokens;
     private readonly allowedMethods;
-    constructor(moduleRef: ModuleRef);
-    execute(msg: ExecMessage): Promise<any>;
+    constructor(methodService: MethodService);
+    execute(msg: ExecMessage): Promise<void>;
 }
-export {};

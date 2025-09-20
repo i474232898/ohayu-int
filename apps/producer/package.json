@@ -26,7 +26,9 @@
     "@nestjs/platform-express": "^11.0.1",
     "amqp-connection-manager": "^4.1.14",
     "amqplib": "0.10.9",
-    "nest-invoke": "file:../../libs/nest-invoke",
+    "install": "^0.13.0",
+    "nest-invoke": "file:../../libs/nest-invoke/nest-invoke-0.0.1.tgz",
+    "npm": "^11.6.0",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.1"
   },

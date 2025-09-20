@@ -11,18 +11,20 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
+var RmqController_1;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.RmqController = void 0;
 const common_1 = require("@nestjs/common");
 const microservices_1 = require("@nestjs/microservices");
 const deferred_executor_service_1 = require("./deferred-executor.service");
-let RmqController = class RmqController {
+let RmqController = RmqController_1 = class RmqController {
     executor;
+    logger = new common_1.Logger(RmqController_1.name);
     constructor(executor) {
         this.executor = executor;
     }
     async handleMessage(msg, context) {
-        console.log('Handling message from queue:', msg);
+        this.logger.log('Handling message from queue:', msg);
         return this.executor.execute(msg);
     }
 };
@@ -35,7 +37,7 @@ __decorate([
     __metadata("design:paramtypes", [Object, microservices_1.RmqContext]),
     __metadata("design:returntype", Promise)
 ], RmqController.prototype, "handleMessage", null);
-exports.RmqController = RmqController = __decorate([
+exports.RmqController = RmqController = RmqController_1 = __decorate([
     (0, common_1.Controller)(),
     __metadata("design:paramtypes", [deferred_executor_service_1.DeferredExecutorService])
 ], RmqController);
