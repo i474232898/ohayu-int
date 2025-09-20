@@ -1,16 +1,16 @@
-import { Inject, Injectable } from '@nestjs/common';
-import { ClientProxy } from '@nestjs/microservices';
+import { Injectable } from '@nestjs/common';
+import { MethodService, ExecMessage } from 'nest-invoke';
 
 @Injectable()
 export class AppService {
-  constructor(@Inject('ORDERS_SERVICE') private rabbitClient: ClientProxy) {}
+  constructor(private methodService: MethodService) {}
 
   async renameUserLater(id: string, newName: string) {
-    const msg = {
+    const msg: ExecMessage = {
       providerToken: 'UserRepository',
       method: 'update',
-      args: [1, { name: '1' }],
+      args: [id, { name: newName }],
     };
-    this.rabbitClient.emit('order-placed', msg);
+    this.methodService.sendMessage(msg);
   }
 }
