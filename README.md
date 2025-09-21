@@ -19,10 +19,30 @@ A lightweight helper (mini-library) for convenient **deferred execution of code*
 ---
 
 ## Example Usage
-
+- to register a provider that need's to be called, add a string alias to it:
 ```ts
-runLater((XXX, context) => {
-  YYY.UserRepository.update(id, { name: newName });
-});
+  @Module({
+  imports: [RemoteMethodModule],
+  controllers: [RmqController],
+  providers: [
+    DeferredExecutorService,
+    UserRepository,
+
+    { provide: 'UserRepository', useExisting: UserRepository },
+  ],
+})
+export class WorkerModule {}
 ```
 
+## 🧪 Testing
+
+```bash
+# Start the services
+docker-compose up
+
+# Test the deferred execution
+curl http://localhost:3000/demo/user123/JohnDoe
+
+# Check logs of Producer: "...Sending message to queue:..."
+# Check logs of Consumer: "...Invoking UserRepository.update with args:..."
+```

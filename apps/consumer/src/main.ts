@@ -1,4 +1,3 @@
-// main.ts
 import { NestFactory } from '@nestjs/core';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 import { WorkerModule } from './worker.module';
@@ -9,7 +8,7 @@ async function bootstrap() {
     {
       transport: Transport.RMQ,
       options: {
-        urls: ['amqp://guest:guest@localhost:5672'],
+        urls: [process.env.RABBITMQ_URL || 'amqp://localhost:5672'],
         queue: 'orders-queue',
       },
     },

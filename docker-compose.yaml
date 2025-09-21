@@ -2,19 +2,27 @@ version: '3.8'
 services:
   rabbitmq:
     image: rabbitmq:3.13-management
-    ports: [ "5672:5672", "15672:15672" ]
+    ports: ['5672:5672', '15672:15672']
     environment:
       - RABBITMQ_DEFAULT_USER=guest
       - RABBITMQ_DEFAULT_PASS=guest
-  # app-producer:
-  #   build: .
-  #   command: ['node', 'dist/main-producer.js']
-  #   environment:
-  #     - RABBITMQ_URL=amqp://rabbitmq:5672
-  #   depends_on: [rabbitmq]
-  # app-worker:
-  #   build: .
-  #   command: ['node', 'dist/main-worker.js']
-  #   environment:
-  #     - RABBITMQ_URL=amqp://rabbitmq:5672
-  #   depends_on: [rabbitmq]
+
+  producer:
+    build:
+      context: .
+      dockerfile: apps/producer/Dockerfile
+    ports:
+      - '3000:3000'
+    depends_on:
+      - rabbitmq
+    environment:
+      - RABBITMQ_URL=amqp://guest:guest@rabbitmq:5672
+
+  consumer:
+    build:
+      context: .
+      dockerfile: apps/consumer/Dockerfile
+    depends_on:
+      - rabbitmq
+    environment:
+      - RABBITMQ_URL=amqp://guest:guest@rabbitmq:5672
